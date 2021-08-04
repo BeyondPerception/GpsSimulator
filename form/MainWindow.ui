@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>MainWindow</class>
+  <widget class="QMainWindow" name="MainWindow">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>800</width>
+        <height>395</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>MainWindow</string>
+    </property>
+    <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+        <number>0</number>
+      </property>
+      <widget class="QWidget" name="centralwidget">
+        <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="1">
+            <widget class="QLogButton" name="logButton" native="true">
+              <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                </sizepolicy>
+              </property>
+            </widget>
+          </item>
+          <item row="1" column="0">
+            <layout class="QGridLayout" name="gpsSimTileLayout">
+              <item row="0" column="0">
+                <widget class="QSlider" name="durationSlider">
+                  <property name="maximum">
+                    <number>600</number>
+                  </property>
+                  <property name="minimum">
+                    <number>60</number>
+                  </property>
+                  <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                  </property>
+                </widget>
+              </item>
+              <item row="0" column="1">
+                <widget class="QPushButton" name="gpsSimButton">
+                  <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                    </sizepolicy>
+                  </property>
+                </widget>
+              </item>
+            </layout>
+          </item>
+          <item row="0" column="1">
+            <widget class="QStatusButton" name="internalStatusButton" native="true">
+              <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                </sizepolicy>
+              </property>
+              <property name="text" stdset="0">
+                <string/>
+              </property>
+            </widget>
+          </item>
+          <item row="0" column="0">
+            <layout class="QGridLayout" name="hackRfTileLayout">
+              <item row="0" column="0">
+                <widget class="QSlider" name="gainSlider">
+                  <property name="maximum">
+                    <number>47</number>
+                  </property>
+                  <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                  </property>
+                </widget>
+              </item>
+              <item row="0" column="1">
+                <widget class="QHackRfButton" name="startHackRfButton">
+                  <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                    </sizepolicy>
+                  </property>
+                </widget>
+              </item>
+            </layout>
+          </item>
+        </layout>
+      </widget>
+    </widget>
+  </widget>
+  <customwidgets>
+    <customwidget>
+      <class>QStatusButton</class>
+      <extends>QWidget</extends>
+      <header>QStatusButton.hpp</header>
+    </customwidget>
+    <customwidget>
+      <class>QLogButton</class>
+      <extends>QWidget</extends>
+      <header>QLogButton.hpp</header>
+    </customwidget>
+    <customwidget>
+      <class>QHackRfButton</class>
+      <extends>QWidget</extends>
+      <header>QHackRfButton.hpp</header>
+    </customwidget>
+  </customwidgets>
+  <resources/>
+  <connections/>
+</ui>
