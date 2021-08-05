@@ -24,9 +24,9 @@ signals:
 
 private slots:
 
-    void outRead (QSocketDescriptor socket, QSocketNotifier::Type type);
+    void outRead ();
 
-    void errRead (QSocketDescriptor socket, QSocketNotifier::Type type);
+    void errRead ();
 
 private:
     QSocketNotifier* outNotifier;

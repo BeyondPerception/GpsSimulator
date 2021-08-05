@@ -59,7 +59,7 @@ void QLogButton::mouseReleaseEvent (QMouseEvent* e)
     emit released ();
 }
 
-void QLogButton::outRead (QSocketDescriptor socket, QSocketNotifier::Type type)
+void QLogButton::outRead ()
 {
     char buf[1024];
     ssize_t bytesRead;
@@ -69,7 +69,7 @@ void QLogButton::outRead (QSocketDescriptor socket, QSocketNotifier::Type type)
     }
 }
 
-void QLogButton::errRead (QSocketDescriptor socket, QSocketNotifier::Type type)
+void QLogButton::errRead ()
 {
     char buf[1024];
     ssize_t bytesRead;
