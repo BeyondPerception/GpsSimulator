@@ -1,6 +1,7 @@
 #ifndef QSTATUSBUTTON_HPP
 #define QSTATUSBUTTON_HPP
 
+#include <QObject>
 #include <QPushButton>
 
 enum Status
@@ -10,6 +11,8 @@ enum Status
     WARNING,
     ERROR
 };
+
+Q_DECLARE_METATYPE (Status)
 
 class QStatusButton : public QPushButton
 {

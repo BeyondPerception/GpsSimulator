@@ -39,13 +39,16 @@
                   <property name="minimum">
                     <number>60</number>
                   </property>
+                  <property name="sliderPosition">
+                    <number>300</number>
+                  </property>
                   <property name="orientation">
                     <enum>Qt::Vertical</enum>
                   </property>
                 </widget>
               </item>
               <item row="0" column="1">
-                <widget class="QPushButton" name="gpsSimButton">
+                <widget class="QGpsSimButton" name="gpsSimButton">
                   <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                       <horstretch>0</horstretch>
@@ -57,7 +60,7 @@
             </layout>
           </item>
           <item row="0" column="1">
-            <widget class="QStatusButton" name="internalStatusButton" native="true">
+            <widget class="QGpsReceiver" name="gpsReceiver" native="true">
               <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
@@ -112,6 +115,16 @@
       <class>QHackRfButton</class>
       <extends>QWidget</extends>
       <header>QHackRfButton.hpp</header>
+    </customwidget>
+    <customwidget>
+      <class>QGpsSimButton</class>
+      <extends>QWidget</extends>
+      <header>QGpsSimButton.hpp</header>
+    </customwidget>
+    <customwidget>
+      <class>QGpsReceiver</class>
+      <extends>QWidget</extends>
+      <header>QGpsReceiver.hpp</header>
     </customwidget>
   </customwidgets>
   <resources/>

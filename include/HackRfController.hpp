@@ -18,7 +18,7 @@ public:
      * @param sim_file_path GPS simulation file to transmit.
      * @param gain          TX gain to add to transmission power.
      */
-    HackRfController (const char* sim_file_path, uint8_t gain);
+    HackRfController (const std::string& sim_file_path, uint8_t gain);
 
     ~HackRfController ();
 
@@ -33,7 +33,7 @@ private:
     /**
      * Path to GPS simulation file.
      */
-    const char* sim_file_path;
+    std::string sim_file_path;
 
     /**
      * Path to the hackrf_transfer program.

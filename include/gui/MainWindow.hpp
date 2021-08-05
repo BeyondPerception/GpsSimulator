@@ -25,11 +25,11 @@ public:
 
 private slots:
 
-    void internalStatusPressed ();
-
     void toggleFullScreenLog ();
 
     void startHackRfPressed ();
+
+    void generateGpsSim ();
 
 private:
     Ui::MainWindow* ui;

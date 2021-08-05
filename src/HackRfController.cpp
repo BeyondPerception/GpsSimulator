@@ -13,7 +13,7 @@
 #include "loguru.hpp"
 #include "HackRfController.hpp"
 
-HackRfController::HackRfController (const char* sim_file_path, uint8_t gain) :
+HackRfController::HackRfController (const std::string& sim_file_path, uint8_t gain) :
     sim_file_path (sim_file_path),
     gain (gain),
     transmitting (false)
@@ -91,7 +91,7 @@ void HackRfController::startTransfer ()
         // Child process
         // Open shared semaphore in child process.
         sem_t* childSem = sem_open ("child_complete", O_RDWR);
-        const char* argv[] = { hackrf_transfer_path, "-t", (char*) sim_file_path, "-f", "1575420000", "-s", "2600000",
+        const char* argv[] = { hackrf_transfer_path, "-t", sim_file_path.c_str (), "-f", "1575420000", "-s", "2600000",
                                "-a", "1", "-x", std::to_string (gain).c_str (), "-R", nullptr };
         const char* envp[] = { nullptr };
         sem_post (childSem);
@@ -126,9 +126,9 @@ void HackRfController::watchdog_task (pid_t hackrf_transfer_pid)
 {
     notifyEnd.acquire ();
     LOG_F (INFO, "Stopping hackrf_transfer.");
-    kill (hackrf_transfer_pid, SIGTERM);
+    kill (hackrf_transfer_pid, SIGINT);
     // Allow signal to propagate.
-    std::this_thread::yield ();
+    sleep (1);
     if (kill (hackrf_transfer_pid, 0) == 0)
     {
         // If process won't end with SIGTERM, forcibly stop it.

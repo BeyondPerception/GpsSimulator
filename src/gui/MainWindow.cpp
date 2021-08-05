@@ -1,9 +1,9 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
-#include <iostream>
-#include <sstream>
 #include <HackRfController.hpp>
 #include <QHackRfButton.hpp>
+#include <GpsSdrSim.hpp>
+#include <QScrollBar>
 
 MainWindow::MainWindow (QWidget* parent) :
     QMainWindow (parent), ui (new Ui::MainWindow), hackRfController (nullptr)
@@ -14,19 +14,15 @@ MainWindow::MainWindow (QWidget* parent) :
     qout = new QDebugStream (std::cout, ui->logButton);
     qerr = new QDebugStream (std::cerr, ui->logButton, true);
 
-    QPalette palette = ui->logButton->palette ();
-    palette.setColor (QPalette::Base, QColor (33, 33, 41));
-    palette.setColor (QPalette::Text, Qt::white);
-    ui->logButton->setPalette (palette);
-    ui->logButton->setFont (QFont ("Ubuntu Mono", 12));
-
-    // Try to do an initial setup of hackrf controller.
+    // Start GPS Receiver
+    ui->gpsReceiver->startReceiver ();
 
     // Register callbacks
-    connect (ui->internalStatusButton, &QPushButton::released, this, &MainWindow::internalStatusPressed);
     connect (ui->logButton, &QLogButton::released, this, &MainWindow::toggleFullScreenLog);
     connect (ui->startHackRfButton, &QPushButton::released, this, &MainWindow::startHackRfPressed);
+    connect (ui->gpsSimButton, &QGpsSimButton::generatePressed, this, &MainWindow::generateGpsSim);
     connect (ui->gainSlider, &QSlider::sliderMoved, ui->startHackRfButton, &QHackRfButton::setDbGain);
+    connect (ui->durationSlider, &QSlider::sliderMoved, ui->gpsSimButton, &QGpsSimButton::setDuration);
 }
 
 MainWindow::~MainWindow ()
@@ -34,25 +30,6 @@ MainWindow::~MainWindow ()
     delete qout;
     delete qerr;
     delete ui;
-}
-
-void MainWindow::internalStatusPressed ()
-{
-    switch (ui->internalStatusButton->getStatus ())
-    {
-        case OK:
-            ui->internalStatusButton->setStatus (WARNING);
-            break;
-        case WARNING:
-            ui->internalStatusButton->setStatus (ERROR);
-            break;
-        case ERROR:
-            ui->internalStatusButton->setStatus (OFF);
-            break;
-        case OFF:
-            ui->internalStatusButton->setStatus (OK);
-            break;
-    }
 }
 
 void MainWindow::toggleFullScreenLog ()
@@ -86,7 +63,9 @@ void MainWindow::startHackRfPressed ()
     {
         try
         {
-            hackRfController = new HackRfController ("/home/ronak/gpssim.bin", ui->startHackRfButton->getDbGain ());
+            std::string homeDir = getenv ("HOME");
+            hackRfController = new HackRfController ((homeDir + "/gpssim.bin").c_str (),
+                                                     ui->startHackRfButton->getDbGain ());
         } catch (const std::invalid_argument& e)
         {
             ui->startHackRfButton->setWarning (e.what ());
@@ -99,4 +78,18 @@ void MainWindow::startHackRfPressed ()
         hackRfController->startTransfer ();
         ui->startHackRfButton->setOk ("Transmitting...");
     }
+}
+
+void MainWindow::generateGpsSim ()
+{
+    std::string homeDir = getenv ("HOME");
+    std::thread generator_thread (&GpsSdrSim::generateGpsSimulation,
+                                  homeDir + "/gps-sdr-sim/gps-sdr-sim",
+                                  homeDir + "/brdc_file",
+                                  ui->gpsSimButton->getLatitude (),
+                                  ui->gpsSimButton->getLongitude (),
+                                  ui->gpsSimButton->getHeight (),
+                                  ui->gpsSimButton->getDuration (),
+                                  homeDir + "/gpssim.bin");
+    generator_thread.detach ();
 }

@@ -3,9 +3,9 @@
 #include "loguru.hpp"
 #include "GpsSdrSim.hpp"
 
-void GpsSdrSim::generateGpsSimulation (const char* gps_sdr_sim_path, const char* brdc_file_path,
-                                                 double latitude, double longitude, uint8_t height,
-                                                 const char* outputPath)
+void GpsSdrSim::generateGpsSimulation (const std::string& gps_sdr_sim_path, const std::string& brdc_file_path,
+                                       double latitude, double longitude, uint16_t height, uint16_t duration,
+                                       const std::string& outputPath)
 {
     if (!std::filesystem::exists (gps_sdr_sim_path))
     {
@@ -27,9 +27,10 @@ void GpsSdrSim::generateGpsSimulation (const char* gps_sdr_sim_path, const char*
         LOG_F (ERROR, "Invalid longitude coordinate.");
         throw std::invalid_argument ("Invalid longitude coordinate.");
     }
-    std::string gpsSimCommand = std::string (gps_sdr_sim_path) + " -e " + std::string (brdc_file_path) + " -b 8 -l " +
-                               std::to_string (latitude) + "," + std::to_string (longitude) + "," +
-                               std::to_string (height) + " -o " + std::string (outputPath);
+    std::string gpsSimCommand =
+        gps_sdr_sim_path + " -e " + brdc_file_path + " -b 8 -l " + std::to_string (latitude) + "," +
+        std::to_string (longitude) + "," + std::to_string (height) + " -d " + std::to_string (duration) + " -o " +
+        outputPath;
 
     if (system (gpsSimCommand.c_str ()) != 0)
     {

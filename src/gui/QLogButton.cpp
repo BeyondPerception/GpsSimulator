@@ -1,9 +1,11 @@
 #include <QPainter>
+#include <QPalette>
 #include <fcntl.h>
 #include "QLogButton.hpp"
 
 QLogButton::QLogButton (QWidget* parent) : QTextEdit (parent)
 {
+    // Capture stdout and stderr and redirect to log.
     this->setReadOnly (true);
     int outFds[2];
     pipe (outFds);
@@ -21,6 +23,13 @@ QLogButton::QLogButton (QWidget* parent) : QTextEdit (parent)
     errNotifier = new QSocketNotifier (errFds[0], QSocketNotifier::Read, this);
     connect (outNotifier, &QSocketNotifier::activated, this, &QLogButton::outRead);
     connect (errNotifier, &QSocketNotifier::activated, this, &QLogButton::errRead);
+
+    // Setup colors.
+    QPalette pal = palette ();
+    pal.setColor (QPalette::Base, QColor (33, 33, 41));
+    pal.setColor (QPalette::Text, Qt::white);
+    setPalette (pal);
+    setFont (QFont ("Ubuntu Mono", 12));
 }
 
 QLogButton::~QLogButton ()

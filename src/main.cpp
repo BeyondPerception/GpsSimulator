@@ -11,6 +11,9 @@ int main (int argc, char* argv[])
     loguru::g_preamble_thread = false;
     loguru::g_preamble_date = false;
 
+    QCoreApplication::setApplicationName ("GPSSimulator");
+
+    QApplication::setFont (QFont ("Ubuntu Mono"));
     QApplication a (argc, argv);
     MainWindow window;
     window.show ();

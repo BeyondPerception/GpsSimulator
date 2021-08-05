@@ -44,7 +44,6 @@ void QHackRfButton::paintEvent (QPaintEvent* event)
     QPainter painter (this);
 
     // Display gain.
-    painter.setFont (QFont ("Ubuntu Mono"));
     painter.drawText (7, 15, QString::fromStdString ("← dB Gain: " + std::to_string (getDbGain ())));
 
     // Update subtext.
