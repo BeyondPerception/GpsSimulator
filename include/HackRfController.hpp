@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <future>
+#include <semaphore>
 
 class HackRfController
 {
