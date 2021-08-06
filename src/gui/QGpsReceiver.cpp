@@ -92,7 +92,9 @@ void QGpsReceiver::gpsquery_task ()
                 if (gpsData.status == STATUS_FIX &&
                     (gpsData.fix.mode == MODE_2D || gpsData.fix.mode == MODE_3D) &&
                     !std::isnan (gpsData.fix.latitude) &&
-                    !std::isnan (gpsData.fix.longitude) && gpsData.dop.hdop < 20)
+                    !std::isnan (gpsData.fix.longitude) &&
+                    gpsData.dop.hdop < 20 &&
+                    gpsData.set & STATUS_SET)
                 {
                     if (gpsData.fix.mode == MODE_2D)
                     {
@@ -112,6 +114,8 @@ void QGpsReceiver::gpsquery_task ()
                 }
             }
         }
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for (0.5s);
     }
 
     gps_stream (&gpsData, WATCH_DISABLE, nullptr);

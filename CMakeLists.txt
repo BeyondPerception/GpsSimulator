@@ -13,6 +13,8 @@ set(QT_VERSION 5)
 set(REQUIRED_LIBS Core Gui Widgets)
 set(REQUIRED_LIBS_QUALIFIED Qt5::Core Qt5::Gui Qt5::Widgets pthread loguru dl gps stdc++fs)
 
+add_compile_options(-g)
+
 include_directories(lib/loguru/include/)
 
 find_package(Qt${QT_VERSION} COMPONENTS ${REQUIRED_LIBS} REQUIRED)
