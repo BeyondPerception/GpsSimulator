@@ -115,7 +115,7 @@ void QGpsReceiver::gpsquery_task ()
             }
         }
         using namespace std::chrono_literals;
-        std::this_thread::sleep_for (0.5s);
+        std::this_thread::sleep_for (500ms);
     }
 
     gps_stream (&gpsData, WATCH_DISABLE, nullptr);
