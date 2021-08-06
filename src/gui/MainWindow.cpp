@@ -66,7 +66,7 @@ void MainWindow::startHackRfPressed ()
         try
         {
             std::string homeDir = getenv ("HOME");
-            hackRfController = new HackRfController (homeDir + "/gpssim.bin", ui->startHackRfButton->getDbGain ());
+            hackRfController = new HackRfController (homeDir + "/ramdisk/gpssim.bin", ui->startHackRfButton->getDbGain ());
             ui->gpsReceiver->transmitStarted ();
         } catch (const std::invalid_argument& e)
         {
@@ -92,6 +92,6 @@ void MainWindow::generateGpsSim ()
                                   ui->gpsSimButton->getLongitude (),
                                   ui->gpsSimButton->getHeight (),
                                   ui->gpsSimButton->getDuration (),
-                                  homeDir + "/gpssim.bin");
+                                  homeDir + "/ramdisk/gpssim.bin");
     generator_thread.detach ();
 }

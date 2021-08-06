@@ -112,7 +112,6 @@ void QGpsReceiver::gpsquery_task ()
                     hdopFormat << std::fixed << gpsData.dop.hdop;
                     if (gpsData.fix.mode == MODE_2D)
                     {
-
                         std::string display = "2D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "\nhdop: " +
                                               hdopFormat.str () + "\nFix: " +
