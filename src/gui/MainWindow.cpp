@@ -13,8 +13,8 @@ MainWindow::MainWindow (QWidget* parent) :
     setWindowTitle ("GpsSimulator");
 
     // Setup on-screen log
-    qout = new QDebugStream (std::cout, ui->logButton);
-    qerr = new QDebugStream (std::cerr, ui->logButton, true);
+//    qout = new QDebugStream (std::cout, ui->logButton);
+//    qerr = new QDebugStream (std::cerr, ui->logButton, true);
 
     // Start GPS Receiver
     ui->gpsReceiver->startReceiver ();
