@@ -1,6 +1,5 @@
 #include <filesystem>
 #include <thread>
-#include <semaphore>
 #include <cstring>
 #include <cerrno>
 #include <csignal>
