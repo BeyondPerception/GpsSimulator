@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <cmath>
 #include <iostream>
+#include <sstream>
 
 QGpsReceiver::QGpsReceiver (QWidget* parent) : QStatusButton (parent), threadRunning (false)
 {
@@ -106,14 +107,15 @@ void QGpsReceiver::gpsquery_task ()
                     {
                         transmitEndTime = std::chrono::high_resolution_clock::now ();
                     }
+                    std::ostringstream hdopFormat;
+                    hdopFormat.precision (2);
+                    hdopFormat << std::fixed << gpsData.dop.hdop;
                     if (gpsData.fix.mode == MODE_2D)
                     {
                         std::string display = "2D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "\nhdop: " +
                                               std::to_string (std::ceil (gpsData.dop.hdop * 100.0) / 100.0) +
-                                              "\nFix: " +
-                                              std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
-                                                  transmitEndTime - transmitStartTime).count ()) + +" seconds";
+                                              "\nFix: " + hdopFormat.str () + " seconds";
                         emit fixAcquired (QString::fromStdString (display), WARNING);
                     } else
                     {
@@ -121,9 +123,7 @@ void QGpsReceiver::gpsquery_task ()
                                               std::to_string (gpsData.fix.longitude) + "," +
                                               std::to_string (gpsData.fix.altitude) + "\nhdop: " +
                                               std::to_string (std::ceil (gpsData.dop.hdop * 100.0) / 100.0) +
-                                              "\nFix: " +
-                                              std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
-                                                  transmitEndTime - transmitStartTime).count ()) + " seconds";
+                                              "\nFix: " + hdopFormat.str () + " seconds";
                         emit fixAcquired (QString::fromStdString (display), OK);
                     }
                 } else
