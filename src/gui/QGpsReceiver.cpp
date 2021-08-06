@@ -47,6 +47,12 @@ void QGpsReceiver::startReceiver ()
     gpsQueryThread = std::thread (&QGpsReceiver::gpsquery_task, this);
 }
 
+void QGpsReceiver::transmitStarted ()
+{
+    transmitStartTime = std::chrono::high_resolution_clock::now ();
+    transmitEndTime = transmitStartTime;
+}
+
 void QGpsReceiver::setMainText (const QString& text, Status status)
 {
     mainText->setText (text);
@@ -96,16 +102,26 @@ void QGpsReceiver::gpsquery_task ()
                     gpsData.dop.hdop < 20 &&
                     gpsData.set & STATUS_SET)
                 {
+                    if (transmitStartTime == transmitEndTime)
+                    {
+                        transmitEndTime = std::chrono::high_resolution_clock::now ();
+                    }
                     if (gpsData.fix.mode == MODE_2D)
                     {
                         std::string display = "2D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
-                                              std::to_string (gpsData.fix.longitude);
+                                              std::to_string (gpsData.fix.longitude) + "\nhdop: " +
+                                              std::to_string (gpsData.dop.hdop) + "\nTime taken to fix: " +
+                                              std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
+                                                  transmitEndTime - transmitStartTime).count ());
                         emit fixAcquired (QString::fromStdString (display), WARNING);
                     } else
                     {
                         std::string display = "3D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "," +
-                                              std::to_string (gpsData.fix.altitude);
+                                              std::to_string (gpsData.fix.altitude) + "\nhdop: " +
+                                              std::to_string (gpsData.dop.hdop) + "\nTime taken to fix: " +
+                                              std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
+                                                  transmitEndTime - transmitStartTime).count ());
                         emit fixAcquired (QString::fromStdString (display), OK);
                     }
                 } else

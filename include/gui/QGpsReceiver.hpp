@@ -18,6 +18,8 @@ public:
 
     void startReceiver ();
 
+    void transmitStarted ();
+
 private slots:
 
     void setErrorText (const QString& error, Status status);
@@ -40,6 +42,9 @@ private:
     QLabel* errorText;
 
     struct gps_data_t gpsData;
+
+    std::chrono::system_clock::time_point transmitStartTime;
+    std::chrono::system_clock::time_point transmitEndTime;
 
     void gpsquery_task ();
 };
