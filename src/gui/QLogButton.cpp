@@ -1,5 +1,6 @@
 #include <QPainter>
 #include <QPalette>
+#include <QScroller>
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -25,13 +26,16 @@ QLogButton::QLogButton (QWidget* parent) : QTextEdit (parent)
     errNotifier = new QSocketNotifier (errFds[0], QSocketNotifier::Read, this);
     connect (outNotifier, &QSocketNotifier::activated, this, &QLogButton::outRead);
     connect (errNotifier, &QSocketNotifier::activated, this, &QLogButton::errRead);
-    
+
     // Setup colors.
     QPalette pal = palette ();
     pal.setColor (QPalette::Base, QColor (33, 33, 41));
     pal.setColor (QPalette::Text, Qt::white);
     setPalette (pal);
     setFont (QFont ("Ubuntu Mono", 12));
+
+    // Setup gesture support for scrolling.
+    QScroller::grabGesture (viewport (), QScroller::LeftMouseButtonGesture);
 }
 
 QLogButton::~QLogButton ()
