@@ -10,22 +10,22 @@ void GpsSdrSim::generateGpsSimulation (const std::string& gps_sdr_sim_path, cons
     if (!std::filesystem::exists (gps_sdr_sim_path))
     {
         LOG_F (ERROR, "Invalid gps-sim-sdr path.");
-        throw std::invalid_argument ("Invalid gps-sim-sdr path.");
+        return;
     }
     if (!std::filesystem::exists (brdc_file_path))
     {
         LOG_F (ERROR, "Invalid BRDC file path.");
-        throw std::invalid_argument ("Invalid BRDC file path.");
+        return;
     }
     if (latitude < -90 || latitude > 90)
     {
         LOG_F (ERROR, "Invalid latitude coordinate.");
-        throw std::invalid_argument ("Invalid latitude coordinate.");
+        return;
     }
     if (longitude < -180 || longitude > 180)
     {
         LOG_F (ERROR, "Invalid longitude coordinate.");
-        throw std::invalid_argument ("Invalid longitude coordinate.");
+        return;
     }
     std::string gpsSimCommand =
         gps_sdr_sim_path + " -e " + brdc_file_path + " -b 8 -l " + std::to_string (latitude) + "," +
@@ -35,6 +35,6 @@ void GpsSdrSim::generateGpsSimulation (const std::string& gps_sdr_sim_path, cons
     if (system (gpsSimCommand.c_str ()) != 0)
     {
         LOG_F (ERROR, "Failed to generate GPS Simulation file.");
-        throw std::runtime_error ("Failed to generate GPS Simulation file.");
+        return;
     }
 }
