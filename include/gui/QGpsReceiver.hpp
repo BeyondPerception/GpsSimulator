@@ -22,13 +22,13 @@ private slots:
 
     void setErrorText (const QString& error, Status status);
 
-    void setMainText (const QString& text);
+    void setMainText (const QString& text, Status status);
 
 signals:
 
     void errorEncountered (const QString& error, Status status);
 
-    void fixAcquired (const QString& text);
+    void fixAcquired (const QString& text, Status status);
 
 private:
     std::atomic<bool> threadRunning;

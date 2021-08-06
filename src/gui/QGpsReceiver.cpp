@@ -47,9 +47,10 @@ void QGpsReceiver::startReceiver ()
     gpsQueryThread = std::thread (&QGpsReceiver::gpsquery_task, this);
 }
 
-void QGpsReceiver::setMainText (const QString& text)
+void QGpsReceiver::setMainText (const QString& text, Status status)
 {
     mainText->setText (text);
+    setStatus (status);
 }
 
 void QGpsReceiver::setErrorText (const QString& error, Status status)
@@ -97,14 +98,17 @@ void QGpsReceiver::gpsquery_task ()
                     {
                         std::string display = "2D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude);
-                        emit fixAcquired (QString::fromStdString (display));
+                        emit fixAcquired (QString::fromStdString (display), WARNING);
                     } else
                     {
                         std::string display = "3D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "," +
                                               std::to_string (gpsData.fix.altitude);
-                        emit fixAcquired (QString::fromStdString (display));
+                        emit fixAcquired (QString::fromStdString (display), OK);
                     }
+                } else if (gpsData.status == STATUS_NO_FIX)
+                {
+                    emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
                 }
             }
         }
