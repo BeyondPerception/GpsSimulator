@@ -110,18 +110,20 @@ void QGpsReceiver::gpsquery_task ()
                     {
                         std::string display = "2D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "\nhdop: " +
-                                              std::to_string (gpsData.dop.hdop) + "\nTime taken to fix: " +
+                                              std::to_string (std::ceil (gpsData.dop.hdop * 100.0) / 100.0) +
+                                              "\nFix: " +
                                               std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
-                                                  transmitEndTime - transmitStartTime).count ());
+                                                  transmitEndTime - transmitStartTime).count ()) + +" seconds";
                         emit fixAcquired (QString::fromStdString (display), WARNING);
                     } else
                     {
                         std::string display = "3D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "," +
                                               std::to_string (gpsData.fix.altitude) + "\nhdop: " +
-                                              std::to_string (gpsData.dop.hdop) + "\nTime taken to fix: " +
+                                              std::to_string (std::ceil (gpsData.dop.hdop * 100.0) / 100.0) +
+                                              "\nFix: " +
                                               std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
-                                                  transmitEndTime - transmitStartTime).count ());
+                                                  transmitEndTime - transmitStartTime).count ()) + " seconds";
                         emit fixAcquired (QString::fromStdString (display), OK);
                     }
                 } else
