@@ -88,7 +88,7 @@ void QGpsReceiver::gpsquery_task ()
         {
             if (gps_read (&gpsData, nullptr, 0) != -1)
             {
-                if (gpsData.fix.status == STATUS_FIX &&
+                if (gpsData.status == STATUS_FIX &&
                     (gpsData.fix.mode == MODE_2D || gpsData.fix.mode == MODE_3D) &&
                     !std::isnan (gpsData.fix.latitude) &&
                     !std::isnan (gpsData.fix.longitude))
