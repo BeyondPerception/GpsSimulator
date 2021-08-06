@@ -112,18 +112,21 @@ void QGpsReceiver::gpsquery_task ()
                     hdopFormat << std::fixed << gpsData.dop.hdop;
                     if (gpsData.fix.mode == MODE_2D)
                     {
+
                         std::string display = "2D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "\nhdop: " +
-                                              std::to_string (std::ceil (gpsData.dop.hdop * 100.0) / 100.0) +
-                                              "\nFix: " + hdopFormat.str () + " seconds";
+                                              hdopFormat.str () + "\nFix: " +
+                                              std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
+                                                  transmitEndTime - transmitStartTime).count ()) + " seconds";
                         emit fixAcquired (QString::fromStdString (display), WARNING);
                     } else
                     {
                         std::string display = "3D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "," +
                                               std::to_string (gpsData.fix.altitude) + "\nhdop: " +
-                                              std::to_string (std::ceil (gpsData.dop.hdop * 100.0) / 100.0) +
-                                              "\nFix: " + hdopFormat.str () + " seconds";
+                                              hdopFormat.str () + "\nFix: " +
+                                              std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
+                                                  transmitEndTime - transmitStartTime).count ()) + " seconds";
                         emit fixAcquired (QString::fromStdString (display), OK);
                     }
                 } else
