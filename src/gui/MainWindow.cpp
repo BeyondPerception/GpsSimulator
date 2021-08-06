@@ -13,8 +13,8 @@ MainWindow::MainWindow (QWidget* parent) :
     setWindowTitle ("GpsSimulator");
 
     // Setup on-screen log
-//    qout = new QDebugStream (std::cout, ui->logButton);
-//    qerr = new QDebugStream (std::cerr, ui->logButton, true);
+    qout = new QDebugStream (std::cout, ui->logButton);
+    qerr = new QDebugStream (std::cerr, ui->logButton, true);
 
     // Start GPS Receiver
     ui->gpsReceiver->startReceiver ();
@@ -66,7 +66,7 @@ void MainWindow::startHackRfPressed ()
         try
         {
             std::string homeDir = getenv ("HOME");
-            hackRfController = new HackRfController ((homeDir + "/gpssim.bin").c_str (),
+            hackRfController = new HackRfController (homeDir + "/gpssim.bin",
                                                      ui->startHackRfButton->getDbGain ());
         } catch (const std::invalid_argument& e)
         {

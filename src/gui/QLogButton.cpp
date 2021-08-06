@@ -8,23 +8,23 @@
 QLogButton::QLogButton (QWidget* parent) : QTextEdit (parent)
 {
     // Capture stdout and stderr and redirect to log.
-//    this->setReadOnly (true);
-//    int outFds[2];
-//    pipe (outFds);
-//    dup2 (outFds[1], 1);
-//    fcntl (outFds[0], F_SETFL, O_NONBLOCK);
-//    outFd = outFds[0];
-//
-//    int errFds[2];
-//    pipe (errFds);
-//    dup2 (errFds[1], 2);
-//    fcntl (errFds[0], F_SETFL, O_NONBLOCK);
-//    errFd = errFds[0];
-//
-//    outNotifier = new QSocketNotifier (outFds[0], QSocketNotifier::Read, this);
-//    errNotifier = new QSocketNotifier (errFds[0], QSocketNotifier::Read, this);
-//    connect (outNotifier, &QSocketNotifier::activated, this, &QLogButton::outRead);
-//    connect (errNotifier, &QSocketNotifier::activated, this, &QLogButton::errRead);
+    this->setReadOnly (true);
+    int outFds[2];
+    pipe (outFds);
+    dup2 (outFds[1], 1);
+    fcntl (outFds[0], F_SETFL, O_NONBLOCK);
+    outFd = outFds[0];
+
+    int errFds[2];
+    pipe (errFds);
+    dup2 (errFds[1], 2);
+    fcntl (errFds[0], F_SETFL, O_NONBLOCK);
+    errFd = errFds[0];
+
+    outNotifier = new QSocketNotifier (outFds[0], QSocketNotifier::Read, this);
+    errNotifier = new QSocketNotifier (errFds[0], QSocketNotifier::Read, this);
+    connect (outNotifier, &QSocketNotifier::activated, this, &QLogButton::outRead);
+    connect (errNotifier, &QSocketNotifier::activated, this, &QLogButton::errRead);
     
     // Setup colors.
     QPalette pal = palette ();
