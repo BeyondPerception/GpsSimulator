@@ -1,6 +1,6 @@
 #include <QPainter>
 #include <QPalette>
-#include <unistd.h
+#include <unistd.h>
 #include <fcntl.h>
 
 #include "QLogButton.hpp"
