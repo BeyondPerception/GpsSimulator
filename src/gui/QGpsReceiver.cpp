@@ -92,7 +92,7 @@ void QGpsReceiver::gpsquery_task ()
                 if (gpsData.status == STATUS_FIX &&
                     (gpsData.fix.mode == MODE_2D || gpsData.fix.mode == MODE_3D) &&
                     !std::isnan (gpsData.fix.latitude) &&
-                    !std::isnan (gpsData.fix.longitude))
+                    !std::isnan (gpsData.fix.longitude) && gpsData.dop.hdop < 20)
                 {
                     if (gpsData.fix.mode == MODE_2D)
                     {
@@ -106,7 +106,7 @@ void QGpsReceiver::gpsquery_task ()
                                               std::to_string (gpsData.fix.altitude);
                         emit fixAcquired (QString::fromStdString (display), OK);
                     }
-                } else if (gpsData.status == STATUS_NO_FIX)
+                } else
                 {
                     emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
                 }
