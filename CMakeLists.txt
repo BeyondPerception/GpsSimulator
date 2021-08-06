@@ -11,7 +11,7 @@ set(CMAKE_AUTOUIC ON)
 
 set(QT_VERSION 5)
 set(REQUIRED_LIBS Core Gui Widgets)
-set(REQUIRED_LIBS_QUALIFIED Qt5::Core Qt5::Gui Qt5::Widgets pthread loguru dl gps)
+set(REQUIRED_LIBS_QUALIFIED Qt5::Core Qt5::Gui Qt5::Widgets pthread loguru dl gps stdc++fs)
 
 include_directories(lib/loguru/include/)
 
