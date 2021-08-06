@@ -1,6 +1,8 @@
 #include <QPainter>
 #include <QPalette>
+#include <unistd.h
 #include <fcntl.h>
+
 #include "QLogButton.hpp"
 
 QLogButton::QLogButton (QWidget* parent) : QTextEdit (parent)

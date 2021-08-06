@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QKeyEvent>
-#include <HackRfController.hpp>
+
+#include "HackRfController.hpp"
 #include "QDebugStream.hpp"
 
 QT_BEGIN_NAMESPACE
