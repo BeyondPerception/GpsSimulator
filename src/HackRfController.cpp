@@ -6,6 +6,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <fcntl.h>
+#include <semaphore.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 
