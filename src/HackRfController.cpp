@@ -91,8 +91,9 @@ void HackRfController::startTransfer ()
         // Child process
         // Open shared semaphore in child process.
         sem_t* childSem = sem_open ("child_complete", O_RDWR);
-        const char* argv[] = { hackrf_transfer_path, "-t", sim_file_path.c_str (), "-f", "1575420000", "-s", "2600000",
-                               "-a", "1", "-x", std::to_string (gain).c_str (), "-R", nullptr };
+        const char* argv[] = { "chrt", "-f", "99", hackrf_transfer_path, "-t", sim_file_path.c_str (), "-f",
+                               "1575420000", "-s", "2600000", "-a", "1", "-x", std::to_string (gain).c_str (), "-R",
+                               nullptr };
         const char* envp[] = { nullptr };
         sem_post (childSem);
         sem_close (childSem);
