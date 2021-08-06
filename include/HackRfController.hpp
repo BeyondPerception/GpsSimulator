@@ -7,7 +7,6 @@
 
 #include <cstdint>
 #include <future>
-#include <semaphore>
 
 class HackRfController
 {
@@ -49,7 +48,7 @@ private:
     /**
      *  Field that is updated when the transfer is started/stopped.
      */
-    bool transmitting;
+    std::atomic<bool> transmitting;
 
     /**
      * Thread that runs the hackrf_transfer program and stops it when requested.
@@ -59,7 +58,8 @@ private:
     /**
      * Signals to tell the transfer thread to stop.
      */
-    std::binary_semaphore notifyEnd{ 0 };
+    std::mutex mutex;
+    std::condition_variable notifyEnd;
 
     /**
      * Implementation of starting the transfer and waiting for the request to stop.

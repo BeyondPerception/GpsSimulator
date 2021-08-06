@@ -117,14 +117,19 @@ void HackRfController::startTransfer ()
 void HackRfController::stopTransfer ()
 {
     LOG_F (INFO, "Requesting stop of hackrf_transfer.");
-    notifyEnd.release ();
-    watchdog_thread.join ();
     transmitting = false;
+    notifyEnd.notify_all ();
+    watchdog_thread.join ();
 }
 
 void HackRfController::watchdog_task (pid_t hackrf_transfer_pid)
 {
-    notifyEnd.acquire ();
+    std::unique_lock<std::mutex> lock (mutex);
+    while (transmitting)
+    {
+        // Handle spurious wakeups.
+        notifyEnd.wait (lock);
+    }
     LOG_F (INFO, "Stopping hackrf_transfer.");
     kill (hackrf_transfer_pid, SIGINT);
     // Allow signal to propagate.
