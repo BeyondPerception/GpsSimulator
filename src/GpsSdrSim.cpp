@@ -52,6 +52,7 @@ void GpsSdrSim::moveSimFileToRamDisk (const std::string& simFilePath, const std:
     if (std::filesystem::exists (simFilePath) && std::filesystem::exists (ramDiskPath))
     {
         std::filesystem::path simFile (simFilePath);
-        std::filesystem::copy_file (simFile, ramDiskPath + "/" + simFile.filename ().string ());
+        std::filesystem::copy_file (simFile, ramDiskPath + "/" + simFile.filename ().string (),
+                                    std::filesystem::copy_options::overwrite_existing);
     }
 }
