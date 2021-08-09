@@ -17,7 +17,8 @@ MainWindow::MainWindow (QWidget* parent) :
     qerr = new QDebugStream (std::cerr, ui->logButton, true);
 
     // Move gps sim file to ramdisk.
-    GpsSdrSim::moveSimFileToRamDisk ("/home/pi/gpssim.bin", "/home/pi/ramdisk");
+    std::string homeDir = getenv ("HOME");
+    GpsSdrSim::moveSimFileToRamDisk (homeDir + "/gpssim.bin", homeDir + "/ramdisk");
 
     // Start GPS Receiver
     ui->gpsReceiver->startReceiver ();
