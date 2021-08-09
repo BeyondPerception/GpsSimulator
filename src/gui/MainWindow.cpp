@@ -16,6 +16,9 @@ MainWindow::MainWindow (QWidget* parent) :
     qout = new QDebugStream (std::cout, ui->logButton);
     qerr = new QDebugStream (std::cerr, ui->logButton, true);
 
+    // Move gps sim file to ramdisk.
+    GpsSdrSim::moveSimFileToRamDisk ("/home/pi/gpssim.bin", "/home/pi/ramdisk");
+
     // Start GPS Receiver
     ui->gpsReceiver->startReceiver ();
 
@@ -66,7 +69,8 @@ void MainWindow::startHackRfPressed ()
         try
         {
             std::string homeDir = getenv ("HOME");
-            hackRfController = new HackRfController (homeDir + "/ramdisk/gpssim.bin", ui->startHackRfButton->getDbGain ());
+            hackRfController = new HackRfController (homeDir + "/ramdisk/gpssim.bin",
+                                                     ui->startHackRfButton->getDbGain ());
             ui->gpsReceiver->transmitStarted ();
         } catch (const std::invalid_argument& e)
         {
@@ -92,6 +96,6 @@ void MainWindow::generateGpsSim ()
                                   ui->gpsSimButton->getLongitude (),
                                   ui->gpsSimButton->getHeight (),
                                   ui->gpsSimButton->getDuration (),
-                                  homeDir + "/ramdisk/gpssim.bin");
+                                  homeDir + "/gpssim.bin");
     generator_thread.detach ();
 }

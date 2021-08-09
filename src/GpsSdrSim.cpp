@@ -37,4 +37,13 @@ void GpsSdrSim::generateGpsSimulation (const std::string& gps_sdr_sim_path, cons
         LOG_F (ERROR, "Failed to generate GPS Simulation file.");
         return;
     }
+    moveSimFileToRamDisk (outputPath, "/home/pi/ramdisk");
+}
+
+void GpsSdrSim::moveSimFileToRamDisk (const std::string& simFilePath, const std::string& ramDiskPath)
+{
+    if (std::filesystem::exists (simFilePath) && std::filesystem::exists (ramDiskPath))
+    {
+        std::filesystem::copy_file (simFilePath, ramDiskPath);
+    }
 }
