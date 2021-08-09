@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <semaphore.h>
+#include <linux/sched.h>
+#include <sys/syscall.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 
@@ -91,8 +93,31 @@ void HackRfController::startTransfer ()
         // Child process
         // Open shared semaphore in child process.
         sem_t* childSem = sem_open ("child_complete", O_RDWR);
-        const char* argv[] = { "chrt", "-f", "99", hackrf_transfer_path, "-t", sim_file_path.c_str (), "-f",
-                               "1575420000", "-s", "2600000", "-a", "1", "-x", std::to_string (gain).c_str (), "-R",
+
+        struct sched_attr
+        {
+            uint32_t size;              /* Size of this structure */
+            uint32_t sched_policy;      /* Policy (SCHED_*) */
+            uint64_t sched_flags;       /* Flags */
+            int32_t sched_nice;        /* Nice value (SCHED_OTHER,
+                                         SCHED_BATCH) */
+            uint32_t sched_priority;    /* Static priority (SCHED_FIFO,
+                                         SCHED_RR) */
+            /* Remaining fields are for SCHED_DEADLINE */
+            uint64_t sched_runtime;
+            uint64_t sched_deadline;
+            uint64_t sched_period;
+        } attr{};
+
+        // Get the current scheduling attributes for the process.
+        syscall (SYS_sched_getattr, 0, &attr, sizeof (struct sched_attr), 0);
+        // Set the process as real-time with the highest priority.
+        attr.sched_policy = SCHED_FIFO;
+        attr.sched_priority = 99;
+        syscall (SYS_sched_setattr, 0, &attr, 0);
+
+        const char* argv[] = { hackrf_transfer_path, "-t", sim_file_path.c_str (), "-f", "1575420000", "-s", "2600000",
+                               "-a", "1", "-x", std::to_string (gain).c_str (), "-R",
                                nullptr };
         const char* envp[] = { nullptr };
         sem_post (childSem);

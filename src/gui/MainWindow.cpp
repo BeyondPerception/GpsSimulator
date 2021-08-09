@@ -23,6 +23,7 @@ MainWindow::MainWindow (QWidget* parent) :
     try
     {
         GpsSdrSim::moveSimFileToRamDisk (homeDir + "/gpssim.bin", homeDir + "/ramdisk");
+        LOG_F (INFO, "Completed copy of simulation file to ramdisk");
     } catch (const std::filesystem::filesystem_error& e)
     {
         LOG_F (ERROR, "Failed to move sim file to ramdisk: %s", e.what ());
