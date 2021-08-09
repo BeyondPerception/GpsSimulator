@@ -38,13 +38,20 @@ void GpsSdrSim::generateGpsSimulation (const std::string& gps_sdr_sim_path, cons
         return;
     }
     std::string homeDir = getenv ("HOME");
-    moveSimFileToRamDisk (outputPath, homeDir + "/ramdisk");
+    try
+    {
+        moveSimFileToRamDisk (outputPath, homeDir + "/ramdisk");
+    } catch (const std::filesystem::filesystem_error& e)
+    {
+        LOG_F (ERROR, "Failed to move sim file to ramdisk: %s", e.what ());
+    }
 }
 
 void GpsSdrSim::moveSimFileToRamDisk (const std::string& simFilePath, const std::string& ramDiskPath)
 {
     if (std::filesystem::exists (simFilePath) && std::filesystem::exists (ramDiskPath))
     {
-        std::filesystem::copy_file (simFilePath, ramDiskPath);
+        std::filesystem::path simFile (simFilePath);
+        std::filesystem::copy_file (simFile, ramDiskPath + "/" + simFile.filename ().string ());
     }
 }

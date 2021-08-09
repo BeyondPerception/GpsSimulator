@@ -4,6 +4,8 @@
 #include <QHackRfButton.hpp>
 #include <GpsSdrSim.hpp>
 #include <QScrollBar>
+#include <filesystem>
+#include <loguru.hpp>
 
 MainWindow::MainWindow (QWidget* parent) :
     QMainWindow (parent), ui (new Ui::MainWindow), hackRfController (nullptr)
@@ -18,7 +20,13 @@ MainWindow::MainWindow (QWidget* parent) :
 
     // Move gps sim file to ramdisk.
     std::string homeDir = getenv ("HOME");
-    GpsSdrSim::moveSimFileToRamDisk (homeDir + "/gpssim.bin", homeDir + "/ramdisk");
+    try
+    {
+        GpsSdrSim::moveSimFileToRamDisk (homeDir + "/gpssim.bin", homeDir + "/ramdisk");
+    } catch (const std::filesystem::filesystem_error& e)
+    {
+        LOG_F (ERROR, "Failed to move sim file to ramdisk: %s", e.what ());
+    }
 
     // Start GPS Receiver
     ui->gpsReceiver->startReceiver ();
