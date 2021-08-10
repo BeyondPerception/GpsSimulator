@@ -70,6 +70,15 @@ HackRfController::~HackRfController ()
 
 void HackRfController::startTransfer ()
 {
+    LOG_F (INFO, "Resetting hackrf board.");
+    if (system ("hackrf_spiflash -R") != 0)
+    {
+        LOG_F (ERROR, "Failed to reset hackrf board. Transmit may not function normally.");
+    }
+    // Let the board come back up.
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for (1s);
+
     LOG_F (INFO, "Starting hackrf_transfer.");
 
     pid_t pid;
