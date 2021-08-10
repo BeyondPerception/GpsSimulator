@@ -77,7 +77,7 @@ void HackRfController::startTransfer ()
     }
     // Let the board come back up.
     using namespace std::chrono_literals;
-    std::this_thread::sleep_for (1s);
+    std::this_thread::sleep_for (2s);
 
     LOG_F (INFO, "Starting hackrf_transfer.");
 
