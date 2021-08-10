@@ -82,23 +82,30 @@ void QGpsReceiver::gpsquery_task ()
     int ret = gps_open ("localhost", "2947", &gpsData);
     if (ret)
     {
-        emit errorEncountered (QString::fromStdString (gps_errstr (ret)), ERROR);
+        emit
+        errorEncountered (QString::fromStdString (gps_errstr (ret)), ERROR);
         return;
     }
     errorText->hide ();
 
     gps_stream (&gpsData, WATCH_ENABLE | WATCH_JSON, nullptr);
 
+    bool hasFix = false;
     while (threadRunning)
     {
         /*
          * Gps query code adapted from cgps source code.
          */
-        if (gps_waiting (&gpsData, 1000000))
+        if (gps_waiting (&gpsData, 500000))
         {
             if (gps_read (&gpsData, nullptr, 0) != -1)
             {
-                if (gpsData.fix.mode >= MODE_2D && gpsData.set & MODE_SET && gpsData.dop.hdop < 20)
+                if (gpsData.set & MODE_SET)
+                {
+                    hasFix = gpsData.fix.mode >= MODE_2D;
+                    gpsData.set &= ~MODE_SET;
+                }
+                if (hasFix)
                 {
                     if (transmitStartTime == transmitEndTime)
                     {
@@ -130,7 +137,6 @@ void QGpsReceiver::gpsquery_task ()
                     emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
                 }
             }
-            gpsData.set &= ~MODE_SET;
         }
     }
 
