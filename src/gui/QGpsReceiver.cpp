@@ -99,7 +99,7 @@ void QGpsReceiver::gpsquery_task ()
         {
             if (gps_read (&gpsData, nullptr, 0) != -1)
             {
-                if (gpsData.fix.mode >= MODE_2D && gpsData.set & MODE_SET)
+                if (gpsData.fix.mode >= MODE_2D && gpsData.set & MODE_SET && gpsData.dop.hdop < 20)
                 {
                     if (transmitStartTime == transmitEndTime)
                     {
@@ -132,6 +132,7 @@ void QGpsReceiver::gpsquery_task ()
                 }
             }
         }
+        gps_clear_fix (&gpsData.fix);
     }
 
     gps_stream (&gpsData, WATCH_DISABLE, nullptr);
