@@ -91,17 +91,15 @@ void QGpsReceiver::gpsquery_task ()
 
     while (threadRunning)
     {
+        /*
+         * Gps query code adapted from cgps source code.
+         */
         // Wait for 5 seconds for data to appear.
-        if (gps_waiting (&gpsData, 5000000))
+        if (gps_waiting (&gpsData, 500000))
         {
             if (gps_read (&gpsData, nullptr, 0) != -1)
             {
-                if (gpsData.status == STATUS_FIX &&
-                    (gpsData.fix.mode == MODE_2D || gpsData.fix.mode == MODE_3D) &&
-                    !std::isnan (gpsData.fix.latitude) &&
-                    !std::isnan (gpsData.fix.longitude) &&
-                    gpsData.dop.hdop < 20 &&
-                    gpsData.set & STATUS_SET)
+                if (gpsData.fix.mode >= MODE_2D && gpsData.set & MODE_SET)
                 {
                     if (transmitStartTime == transmitEndTime)
                     {
@@ -134,8 +132,6 @@ void QGpsReceiver::gpsquery_task ()
                 }
             }
         }
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for (500ms);
     }
 
     gps_stream (&gpsData, WATCH_DISABLE, nullptr);
