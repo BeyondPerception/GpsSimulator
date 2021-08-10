@@ -94,8 +94,7 @@ void QGpsReceiver::gpsquery_task ()
         /*
          * Gps query code adapted from cgps source code.
          */
-        // Wait for 5 seconds for data to appear.
-        if (gps_waiting (&gpsData, 500000))
+        if (gps_waiting (&gpsData, 1000000))
         {
             if (gps_read (&gpsData, nullptr, 0) != -1)
             {
