@@ -131,8 +131,8 @@ void QGpsReceiver::gpsquery_task ()
                     emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
                 }
             }
+            gpsData.set &= ~MODE_SET;
         }
-        gps_clear_fix (&gpsData.fix);
     }
 
     gps_stream (&gpsData, WATCH_DISABLE, nullptr);
