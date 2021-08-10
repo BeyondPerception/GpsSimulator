@@ -90,7 +90,6 @@ void QGpsReceiver::gpsquery_task ()
 
     gps_stream (&gpsData, WATCH_ENABLE | WATCH_JSON, nullptr);
 
-    bool hasFix = false;
     while (threadRunning)
     {
         /*
@@ -100,12 +99,7 @@ void QGpsReceiver::gpsquery_task ()
         {
             if (gps_read (&gpsData, nullptr, 0) != -1)
             {
-                if (gpsData.set & MODE_SET)
-                {
-                    hasFix = gpsData.fix.mode >= MODE_2D;
-                    gpsData.set &= ~MODE_SET;
-                }
-                if (hasFix)
+                if (gpsData.fix.mode >= MODE_2D && gpsData.dop.hdop < 20)
                 {
                     if (transmitStartTime == transmitEndTime)
                     {
