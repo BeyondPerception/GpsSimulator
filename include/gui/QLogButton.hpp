@@ -5,6 +5,8 @@
 #include <QTextEdit>
 #include <QSocketNotifier>
 
+#include <mutex>
+
 class QLogButton : public QTextEdit
 {
 Q_OBJECT
