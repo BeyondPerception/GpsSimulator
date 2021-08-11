@@ -68,6 +68,7 @@ void MainWindow::toggleFullScreenLog ()
         ui->logButton->show ();
         isFullScreen = false;
     }
+    ui->logButton->scrollToEnd ();
 }
 
 void MainWindow::startHackRfPressed ()

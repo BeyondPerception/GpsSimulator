@@ -15,6 +15,8 @@ public:
 
     void append (const QString& text, bool is_error);
 
+    void scrollToEnd ();
+
 protected:
     void mouseReleaseEvent (QMouseEvent* e) override;
 
@@ -34,6 +36,9 @@ private:
 
     int outFd;
     int errFd;
+
+    std::mutex outWriteMutex;
+    std::mutex errWriteMutex;
 };
 
 #endif //QLOGBUTTON_HPP

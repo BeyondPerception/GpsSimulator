@@ -1,6 +1,7 @@
 #include <QPainter>
 #include <QPalette>
 #include <QScroller>
+#include <QScrollBar>
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -65,22 +66,35 @@ void QLogButton::mouseReleaseEvent (QMouseEvent* e)
     emit released ();
 }
 
+void QLogButton::scrollToEnd ()
+{
+    outWriteMutex.lock ();
+    errWriteMutex.lock ();
+    verticalScrollBar ()->setValue (verticalScrollBar ()->maximum ());
+    outWriteMutex.unlock ();
+    errWriteMutex.unlock ();
+}
+
 void QLogButton::outRead ()
 {
+    outWriteMutex.lock ();
     char buf[1024];
     ssize_t bytesRead;
     while ((bytesRead = read (outFd, buf, 1024)) > 0)
     {
         append (QString::fromStdString (std::string (buf, bytesRead)), false);
     }
+    outWriteMutex.unlock ();
 }
 
 void QLogButton::errRead ()
 {
+    errWriteMutex.lock ();
     char buf[1024];
     ssize_t bytesRead;
     while ((bytesRead = read (errFd, buf, 1024)) > 0)
     {
         append (QString::fromStdString (std::string (buf, bytesRead)), true);
     }
+    errWriteMutex.unlock ();
 }
