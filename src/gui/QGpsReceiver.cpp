@@ -112,7 +112,8 @@ void QGpsReceiver::gpsquery_task ()
                     {
                         std::string display = "2D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "\nhdop: " +
-                                              hdopFormat.str () + "\nFix: " +
+                                              hdopFormat.str () + "\n# Sats: " +
+                                              std::to_string (gpsData.satellites_used) + "\n\nFix in: " +
                                               std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
                                                   transmitEndTime - transmitStartTime).count ()) + " seconds";
                         emit fixAcquired (QString::fromStdString (display), WARNING);
@@ -121,7 +122,8 @@ void QGpsReceiver::gpsquery_task ()
                         std::string display = "3D Fix\n" + std::to_string (gpsData.fix.latitude) + "," +
                                               std::to_string (gpsData.fix.longitude) + "," +
                                               std::to_string (gpsData.fix.altitude) + "\nhdop: " +
-                                              hdopFormat.str () + "\nFix: " +
+                                              hdopFormat.str () + "\n# Sats: " +
+                                              std::to_string (gpsData.satellites_used) + "\n\nFix in: " +
                                               std::to_string (std::chrono::duration_cast<std::chrono::seconds> (
                                                   transmitEndTime - transmitStartTime).count ()) + " seconds";
                         emit fixAcquired (QString::fromStdString (display), OK);
