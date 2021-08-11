@@ -7,8 +7,8 @@
 #include <filesystem>
 #include <loguru.hpp>
 
-MainWindow::MainWindow (QWidget* parent) :
-    QMainWindow (parent), ui (new Ui::MainWindow), hackRfController (nullptr)
+MainWindow::MainWindow (HackRfController* controller, QWidget* parent) :
+    QMainWindow (parent), ui (new Ui::MainWindow), hackRfController (controller)
 {
     ui->setupUi (this);
 
@@ -76,15 +76,13 @@ void MainWindow::startHackRfPressed ()
     if (hackRfController != nullptr && hackRfController->isTransmitting ())
     {
         hackRfController->stopTransfer ();
-        delete hackRfController;
         ui->startHackRfButton->setOff ("");
     } else
     {
+        hackRfController->setGain (ui->startHackRfButton->getDbGain ());
         try
         {
-            std::string homeDir = getenv ("HOME");
-            hackRfController = new HackRfController (homeDir + "/gpssim.bin",
-                                                     ui->startHackRfButton->getDbGain ());
+            hackRfController->startTransfer ();
             ui->gpsReceiver->transmitStarted ();
         } catch (const std::invalid_argument& e)
         {
@@ -95,7 +93,6 @@ void MainWindow::startHackRfPressed ()
             ui->startHackRfButton->setError (e.what ());
             return;
         }
-        hackRfController->startTransfer ();
         ui->startHackRfButton->setOk ("Transmitting...");
     }
 }

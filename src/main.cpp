@@ -11,11 +11,14 @@ int main (int argc, char* argv[])
     loguru::g_preamble_thread = false;
     loguru::g_preamble_date = false;
 
-    QCoreApplication::setApplicationName ("GPSSimulator");
+    std::string homeDir = getenv ("HOME");
+    auto* hackRfController = new HackRfController (homeDir + "/gpssim.bin");
 
+    // Setup gui
+    QCoreApplication::setApplicationName ("GPSSimulator");
     QApplication::setFont (QFont ("Ubuntu Mono"));
     QApplication a (argc, argv);
-    MainWindow window;
+    MainWindow window (hackRfController);
     window.show ();
     return QApplication::exec ();
 }

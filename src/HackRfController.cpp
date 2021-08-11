@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <csignal>
 #include <iostream>
+#include <utility>
 #include <unistd.h>
 #include <fcntl.h>
 #include <semaphore.h>
@@ -15,10 +16,34 @@
 #include "loguru.hpp"
 #include "HackRfController.hpp"
 
-HackRfController::HackRfController (const std::string& sim_file_path, uint8_t gain) :
-    sim_file_path (sim_file_path),
+HackRfController::HackRfController (std::string sim_file_path, uint8_t gain) :
+    sim_file_path (std::move (sim_file_path)),
     gain (gain),
-    transmitting (false)
+    transmitting (false),
+    hackrf_transfer_path (nullptr)
+{
+}
+
+HackRfController::~HackRfController ()
+{
+    if (transmitting)
+    {
+        stopTransfer ();
+    }
+    free (hackrf_transfer_path);
+}
+
+void HackRfController::setGain (uint8_t newGain)
+{
+    gain = newGain;
+}
+
+uint8_t HackRfController::getGain () const
+{
+    return gain;
+}
+
+void HackRfController::runtimeChecks ()
 {
     LOG_F (INFO, "Checking if hackrf_transfer exists...");
     // Verify hackrf_transfer exists. system () returns a non-zero value if it does not.
@@ -59,17 +84,10 @@ HackRfController::HackRfController (const std::string& sim_file_path, uint8_t ga
     }
 }
 
-HackRfController::~HackRfController ()
-{
-    if (transmitting)
-    {
-        stopTransfer ();
-    }
-    free (hackrf_transfer_path);
-}
-
 void HackRfController::startTransfer ()
 {
+    runtimeChecks ();
+
     LOG_F (INFO, "Resetting hackrf board.");
     if (system ("hackrf_spiflash -R") != 0)
     {
