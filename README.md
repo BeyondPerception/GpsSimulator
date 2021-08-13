@@ -25,10 +25,13 @@ Next, edit the file `/etc/security/limits.conf` and add the following line to th
 
 ### Dependencies
 
-Install the following packages with `sudo apt install <package-name>`
+Run `sudo apt update`, then install the following packages with `sudo apt install <package-name>`
 - hackrf
 - git
 - cmake
+- fluxbox
+- xserver-xorg
+- xinit
 - qt5-default
 
 Setup gps-sdr-sim using the following commands:
@@ -39,3 +42,11 @@ $ cd ~/gps-sdr-sim
 $ gcc gpssim.c -lm -O3 -o gps-sdr-sim
 ```
 
+### Gui Setup
+
+
+### Firmware Update
+
+The HackRF One board needs a firmware patch to function properly. Navigate to [this](https://github.com/BeyondPerception/hackrf) repository and follow the instructions. This can be done on an entirely seperate computer from the raspberry pi, or the `hackrf_usb.bin` file can be transfered to the pi to be flashed on to the board.
+
+### Building this project
