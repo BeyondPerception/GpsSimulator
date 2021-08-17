@@ -8,7 +8,7 @@ The following is a guide to exactly replicate the GPS Simulator appliance.
 This setup guide assumes you are using a raspberry pi 4B with a user named `pi`. A HackRF One SDR should be plugged in to one of the USB ports, and a GPS receiver should be connected over GPIO pins.
 
 ### OS Setup
-Go to this [link](https://www.raspberrypi.org/software/operating-systems/) and download the Raspberry Pi OS Lite image. Write the image to a microSD card using your favorite method (dd, rufus, etc.)
+Go to this [link](https://downloads.raspberrypi.org/raspios_lite_arm64/images/) and download the Raspberry Pi OS Lite image. Write the image to a microSD card using your favorite method (dd, rufus, etc.)
 
 Boot the raspberry pi and login (default username: `pi`, default password: `raspberry`), and enter the config screen using `sudo raspi-config`. Complete the following steps:
 
