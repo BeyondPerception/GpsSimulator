@@ -97,7 +97,13 @@ void QGpsReceiver::gpsquery_task ()
          */
         if (gps_waiting (&gpsData, 500000))
         {
-            if (gps_read (&gpsData, nullptr, 0) != -1)
+            int gpsReadRet = -1;
+#if GPSD_API_MAJOR_VERSION < 7
+            gpsReadRet = gps_read (&gpsData);
+#else
+            gpsReadRet = gps_read (&gpsData, nullptr, 0);
+#endif
+            if (gpsReadRet != -1)
             {
                 if (gpsData.fix.mode >= MODE_2D && gpsData.dop.hdop < 20)
                 {
