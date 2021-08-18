@@ -82,4 +82,21 @@ This can be done with the following command:
 $ unzip ~/GpsSimulator/fluxbox_config.zip -d ~/
 ```
 
-Additionally, add `startx` to the end of the `~/.profile` file.
+Additionally, add the following to the end of the `~/.profile` file:
+
+```
+if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
+    exec startx
+fi
+```
+
+# Control Server
+
+The GpsSimulator program exposes a port on udp 1111 which accepts commands to control the SDR. The following are the available commands.
+
+| Command | Description                                        | Parameters             |
+|---------|----------------------------------------------------|------------------------|
+| start   | Start the transmit of GPS data.                    |                        |
+| stop    | Stop transmitting.                                 |                        |
+| info    | Prints information about the state of the program. |                        |
+| set     | Sets the variable to the specified value.          | \<variable\> \<value\> |
