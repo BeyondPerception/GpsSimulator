@@ -23,6 +23,8 @@ Next, edit the file `/etc/security/limits.conf` and add the following line to th
 
 `pi        - rtprio - max realtime priority`
 
+Ensure you log out of the `pi` account and log back in before using the appliance.
+
 ### Dependencies
 
 Run `sudo apt update`, then install the following packages with `sudo apt install <package-name>`
