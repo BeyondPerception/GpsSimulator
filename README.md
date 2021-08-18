@@ -45,7 +45,7 @@ $ git clone https://github.com/osqzss/gps-sdr-sim ~/gps-sdr-sim
 $ cd ~/gps-sdr-sim
 $ gcc gpssim.c -lm -O3 -o gps-sdr-sim
 ```
-gps-sdr-sim also requires a ephemeris file which can be aquired here: https://cddis.nasa.gov/archive/gnss/data/daily/. Grab the latest one (requires a free account) by going to the current year, current day number, the `<year>n` directory (e.g. `21n`), then download the file named `brdc<day>.<year>.gz`. Decrompess the file and place it in the home directory and name it `brdc_file`.
+gps-sdr-sim also requires a ephemeris file which can be aquired here: https://cddis.nasa.gov/archive/gnss/data/daily/. Grab the latest one (requires a free account) by going to the current year, current day number, the `<year>n` directory (e.g. `21n`), then download the file named `brdc<day>.<year>.gz`. Decrompess the file and place it in the home directory and name it `brdc_file`. This file does not need to be updated.
 
 Setup gpsd using the following commands:
 
