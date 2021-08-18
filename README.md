@@ -30,6 +30,7 @@ Ensure you log out of the `pi` account and log back in before using the applianc
 Run `sudo apt update`, then install the following packages with `sudo apt install <package-name>`
 - hackrf
 - gpsd
+- libgps-dev
 - git
 - cmake
 - fluxbox
@@ -44,12 +45,59 @@ $ git clone https://github.com/osqzss/gps-sdr-sim ~/gps-sdr-sim
 $ cd ~/gps-sdr-sim
 $ gcc gpssim.c -lm -O3 -o gps-sdr-sim
 ```
+gps-sdr-sim also requires a ephemeris file which can be aquired here: https://cddis.nasa.gov/archive/gnss/data/daily/. Grab the latest one (requires a free account) by going to the current year, current day number, the `<year>n` directory (e.g. `21n`), then download the file named `brdc<day>.<year>.gz`. Decrompess the file and place it in the home directory and name it `brdc_file`. This file does not need to be updated.
 
-### Gui Setup
+Setup gpsd using the following commands:
 
+```
+$ sudo systemctl enable gpsd
+```
 
-### Firmware Update
+And edit the `DEVICES=""` line of `/etc/default/gpsd` to be `DEVICES="/dev/ttyS0"`.
+
+Reboot.
+
+### HackRF One Firmware Update
 
 The HackRF One board needs a firmware patch to function properly. Navigate to [this](https://github.com/BeyondPerception/hackrf) repository and follow the instructions. This can be done on an entirely seperate computer from the raspberry pi, or the `hackrf_usb.bin` file can be transfered to the pi to be flashed on to the board.
 
 ### Building this project
+
+Clone and build this project into the home directory with the following commands:
+
+```
+$ git clone git clone https://github.com/BeyondPerception/GpsSimulator/
+$ cd ~/GpsSimulator/
+$ mkdir build
+$ cd build
+$ cmake ../
+$ make gps_sim_gui_arm
+```
+
+### Gui Setup
+Unzip the file `fluxbox_config.zip` found in this repository's root directory, and place the folder in the home directory.
+
+This can be done with the following command:
+
+```
+$ unzip ~/GpsSimulator/fluxbox_config.zip -d ~/
+```
+
+Additionally, add the following to the end of the `~/.profile` file:
+
+```
+if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
+    exec startx
+fi
+```
+
+# Control Server
+
+The GpsSimulator program exposes a port on udp 1111 which accepts commands to control the SDR. The following are the available commands.
+
+| Command | Description                                        | Parameters             |
+|---------|----------------------------------------------------|------------------------|
+| start   | Start the transmit of GPS data.                    |                        |
+| stop    | Stop transmitting.                                 |                        |
+| info    | Prints information about the state of the program. |                        |
+| set     | Sets the variable to the specified value.          | \<variable\> \<value\> |
