@@ -30,6 +30,7 @@ Ensure you log out of the `pi` account and log back in before using the applianc
 Run `sudo apt update`, then install the following packages with `sudo apt install <package-name>`
 - hackrf
 - gpsd
+- libgps-dev
 - git
 - cmake
 - fluxbox
@@ -45,11 +46,40 @@ $ cd ~/gps-sdr-sim
 $ gcc gpssim.c -lm -O3 -o gps-sdr-sim
 ```
 
-### Gui Setup
+Setup gpsd using the following commands:
 
+```
+$ sudo systemctl enable gpsd
+```
 
-### Firmware Update
+And edit the `DEVICES=""` line of `/etc/default/gpsd` to be `DEVICES="/dev/ttyS0"`.
+
+Reboot.
+
+### HackRF One Firmware Update
 
 The HackRF One board needs a firmware patch to function properly. Navigate to [this](https://github.com/BeyondPerception/hackrf) repository and follow the instructions. This can be done on an entirely seperate computer from the raspberry pi, or the `hackrf_usb.bin` file can be transfered to the pi to be flashed on to the board.
 
 ### Building this project
+
+Clone and build this project into the home directory with the following commands:
+
+```
+$ git clone git clone https://github.com/BeyondPerception/GpsSimulator/
+$ cd ~/GpsSimulator/
+$ mkdir build
+$ cd build
+$ cmake ../
+$ make gps_sim_gui_arm
+```
+
+### Gui Setup
+Unzip the file `fluxbox_config.zip` found in this repository's root directory, and place the folder in the home directory.
+
+This can be done with the following command:
+
+```
+$ unzip ~/GpsSimulator/fluxbox_config.zip -d ~/
+```
+
+Additionally, add `startx` to the end of the `~/.profile` file.
