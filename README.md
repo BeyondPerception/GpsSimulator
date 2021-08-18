@@ -27,6 +27,7 @@ Next, edit the file `/etc/security/limits.conf` and add the following line to th
 
 Run `sudo apt update`, then install the following packages with `sudo apt install <package-name>`
 - hackrf
+- gpsd
 - git
 - cmake
 - fluxbox
