@@ -1,5 +1,6 @@
 #include <cerrno>
 #include <cstring>
+#include <unistd.h>
 #include <netinet/in.h>
 #include <loguru.hpp>
 #include <sstream>
