@@ -16,6 +16,7 @@ QGpsReceiver::QGpsReceiver (QWidget* parent) : QStatusButton (parent), threadRun
     mainText = new QLabel ("No Fix");
     mainText->setFont (QFont ("Ubuntu Mono", 18, QFont::Bold));
     mainText->setAlignment (Qt::AlignCenter);
+    mainText->setWordWrap (true);
     vBoxLayout->addWidget (mainText);
 
     errorText = new QLabel ("");
