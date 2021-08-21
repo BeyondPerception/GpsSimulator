@@ -8,8 +8,12 @@
 #include <cstdint>
 #include <future>
 
-class HackRfController
+#include <QObject>
+
+class HackRfController : public QObject
 {
+Q_OBJECT
+
 public:
 
     /**
@@ -18,9 +22,9 @@ public:
      * @param sim_file_path GPS simulation file to transmit.
      * @param gain          TX gain to add to transmission power.
      */
-    explicit HackRfController (std::string  sim_file_path, uint8_t gain = 0);
+    explicit HackRfController (std::string sim_file_path, uint8_t gain = 0, QObject* parent = nullptr);
 
-    ~HackRfController ();
+    ~HackRfController () override;
 
     void setGain (uint8_t newGain);
 
@@ -31,6 +35,12 @@ public:
     void stopTransfer ();
 
     bool isTransmitting () const;
+
+signals:
+
+    void startedTransmit ();
+
+    void stoppedTransmit ();
 
 private:
 
@@ -62,14 +72,23 @@ private:
     /**
      * Signals to tell the transfer thread to stop.
      */
-    std::mutex mutex;
+    std::mutex conditionMutex;
     std::condition_variable notifyEnd;
+
+    /**
+     * Controls access to the start and stop functions.
+     */
+    std::mutex startStopMutex;
 
     /**
      * Implementation of starting the transfer and waiting for the request to stop.
      */
     void watchdog_task (pid_t hackrf_transfer_pid);
 
+    /**
+     * Performs a series of runtime checks to ensure hackrf_transfer will succeed. Throws a runtime error if any checks
+     * fail.
+     */
     void runtimeChecks ();
 };
 
