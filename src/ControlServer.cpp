@@ -1,11 +1,9 @@
 #include <cerrno>
 #include <cstring>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <loguru.hpp>
 #include <sstream>
 #include <iostream>
-#include <arpa/inet.h>
 #include "ControlServer.hpp"
 
 ControlServer::ControlServer (HackRfController* controller, uint16_t port) :

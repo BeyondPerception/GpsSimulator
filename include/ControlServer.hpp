@@ -1,6 +1,7 @@
 #ifndef CONTROL_SERVER_HPP
 #define CONTROL_SERVER_HPP
 
+#include <sys/socket.h>
 #include "HackRfController.hpp"
 
 class ControlServer
