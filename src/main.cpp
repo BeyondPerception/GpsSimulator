@@ -1,4 +1,6 @@
 #include <QApplication>
+#include <unistd.h>
+#include <getopt.h>
 #include <loguru.hpp>
 
 #include "MainWindow.hpp"
@@ -13,8 +15,29 @@ int main (int argc, char* argv[])
     loguru::g_preamble_thread = false;
     loguru::g_preamble_date = false;
 
+    char* gpsSimFile = nullptr;
+
+    struct option long_options[] = {{ "simfile", required_argument, nullptr, 'f' },
+                                    { nullptr, 0,                   nullptr, 0 }};
+    int c;
+    while ((c = getopt_long (argc, argv, "f:", long_options, nullptr)) != -1)
+    {
+        if (c == 'f')
+        {
+            gpsSimFile = optarg;
+            break;
+        }
+    }
+
     std::string homeDir = getenv ("HOME");
-    auto* hackRfController = new HackRfController (homeDir + "/gpssim.bin");
+    HackRfController* hackRfController;
+    if (gpsSimFile == nullptr)
+    {
+        hackRfController = new HackRfController (homeDir + "/gpssim.bin");
+    } else
+    {
+        hackRfController = new HackRfController (gpsSimFile);
+    }
 
     // Setup server
     ControlServer server (hackRfController);
