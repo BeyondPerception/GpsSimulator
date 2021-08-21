@@ -1,6 +1,8 @@
 #include <QApplication>
-#include "MainWindow.hpp"
 #include <loguru.hpp>
+
+#include "MainWindow.hpp"
+#include "ControlServer.hpp"
 
 int main (int argc, char* argv[])
 {
@@ -14,11 +16,16 @@ int main (int argc, char* argv[])
     std::string homeDir = getenv ("HOME");
     auto* hackRfController = new HackRfController (homeDir + "/gpssim.bin");
 
+    // Setup server
+    ControlServer server (hackRfController);
+    server.start ();
+
     // Setup gui
-    QCoreApplication::setApplicationName ("GPSSimulator");
-    QApplication::setFont (QFont ("Ubuntu Mono"));
-    QApplication a (argc, argv);
-    MainWindow window (hackRfController);
-    window.show ();
-    return QApplication::exec ();
+//    QCoreApplication::setApplicationName ("GPSSimulator");
+//    QApplication::setFont (QFont ("Ubuntu Mono"));
+//    QApplication a (argc, argv);
+//    MainWindow window (hackRfController);
+//    window.show ();
+//    return QApplication::exec ();
+    system ("read");
 }
