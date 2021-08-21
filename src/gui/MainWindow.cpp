@@ -18,20 +18,6 @@ MainWindow::MainWindow (HackRfController* controller, QWidget* parent) :
     qout = new QDebugStream (std::cout, ui->logButton);
     qerr = new QDebugStream (std::cerr, ui->logButton, true);
 
-    // Move gps sim file to ramdisk.
-    std::string homeDir = getenv ("HOME");
-    if (!std::filesystem::exists (homeDir + "/ramdisk/gpssim.bin"))
-    {
-        try
-        {
-            GpsSdrSim::moveSimFileToRamDisk (homeDir + "/gpssim.bin", homeDir + "/ramdisk");
-            LOG_F (INFO, "Completed copy of simulation file to ramdisk");
-        } catch (const std::filesystem::filesystem_error& e)
-        {
-            LOG_F (ERROR, "Failed to move sim file to ramdisk: %s", e.what ());
-        }
-    }
-
     // Start GPS Receiver
     ui->gpsReceiver->startReceiver ();
 
@@ -41,6 +27,8 @@ MainWindow::MainWindow (HackRfController* controller, QWidget* parent) :
     connect (ui->gpsSimButton, &QGpsSimButton::generatePressed, this, &MainWindow::generateGpsSim);
     connect (ui->gainSlider, &QSlider::sliderMoved, ui->startHackRfButton, &QHackRfButton::setDbGain);
     connect (ui->durationSlider, &QSlider::sliderMoved, ui->gpsSimButton, &QGpsSimButton::setDuration);
+    connect (hackRfController, &HackRfController::startedTransmit, this, &MainWindow::setTransmitting);
+    connect (hackRfController, &HackRfController::stoppedTransmit, this, &MainWindow::setStopped);
 }
 
 MainWindow::~MainWindow ()
@@ -76,14 +64,12 @@ void MainWindow::startHackRfPressed ()
     if (hackRfController != nullptr && hackRfController->isTransmitting ())
     {
         hackRfController->stopTransfer ();
-        ui->startHackRfButton->setOff ("");
     } else
     {
         hackRfController->setGain (ui->startHackRfButton->getDbGain ());
         try
         {
             hackRfController->startTransfer ();
-            ui->gpsReceiver->transmitStarted ();
         } catch (const std::invalid_argument& e)
         {
             ui->startHackRfButton->setWarning (e.what ());
@@ -93,8 +79,18 @@ void MainWindow::startHackRfPressed ()
             ui->startHackRfButton->setError (e.what ());
             return;
         }
-        ui->startHackRfButton->setOk ("Transmitting...");
     }
+}
+
+void MainWindow::setTransmitting ()
+{
+    ui->gpsReceiver->transmitStarted ();
+    ui->startHackRfButton->setOk ("Transmitting...");
+}
+
+void MainWindow::setStopped ()
+{
+    ui->startHackRfButton->setOff ("");
 }
 
 void MainWindow::generateGpsSim ()

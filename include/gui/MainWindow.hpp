@@ -32,6 +32,10 @@ private slots:
 
     void generateGpsSim ();
 
+    void setTransmitting ();
+
+    void setStopped ();
+
 private:
     Ui::MainWindow* ui;
 
