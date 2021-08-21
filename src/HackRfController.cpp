@@ -16,11 +16,12 @@
 #include "loguru.hpp"
 #include "HackRfController.hpp"
 
-HackRfController::HackRfController (std::string sim_file_path, uint8_t gain) :
+HackRfController::HackRfController (std::string sim_file_path, uint8_t gain, QObject* parent) :
     sim_file_path (std::move (sim_file_path)),
     gain (gain),
     transmitting (false),
-    hackrf_transfer_path (nullptr)
+    hackrf_transfer_path (nullptr),
+    QObject (parent)
 {
 }
 
@@ -45,6 +46,11 @@ uint8_t HackRfController::getGain () const
 
 void HackRfController::runtimeChecks ()
 {
+    if (transmitting)
+    {
+        throw std::runtime_error ("Already transmitting.");
+    }
+
     LOG_F (INFO, "Checking if hackrf_transfer exists...");
     // Verify hackrf_transfer exists. system () returns a non-zero value if it does not.
     if (system ("which hackrf_transfer"))
@@ -86,6 +92,7 @@ void HackRfController::runtimeChecks ()
 
 void HackRfController::startTransfer ()
 {
+    std::scoped_lock lock (startStopMutex);
     runtimeChecks ();
 
     LOG_F (INFO, "Resetting hackrf board.");
@@ -161,23 +168,29 @@ void HackRfController::startTransfer ()
         // Wait for hackrf_transfer to start, then begin the watchdog thread.
         sem_wait (childCompleteSignal);
         sem_close (childCompleteSignal);
-        watchdog_thread = std::thread (&HackRfController::watchdog_task, this, pid);
         transmitting = true;
+        watchdog_thread = std::thread (&HackRfController::watchdog_task, this, pid);
     }
     sem_unlink ("child_complete");
+    emit startedTransmit ();
 }
 
 void HackRfController::stopTransfer ()
 {
-    LOG_F (INFO, "Requesting stop of hackrf_transfer.");
-    transmitting = false;
-    notifyEnd.notify_all ();
-    watchdog_thread.join ();
+    std::scoped_lock lock (startStopMutex);
+    if (transmitting)
+    {
+        LOG_F (INFO, "Requesting stop of hackrf_transfer.");
+        transmitting = false;
+        notifyEnd.notify_all ();
+        watchdog_thread.join ();
+        emit stoppedTransmit ();
+    }
 }
 
 void HackRfController::watchdog_task (pid_t hackrf_transfer_pid)
 {
-    std::unique_lock<std::mutex> lock (mutex);
+    std::unique_lock<std::mutex> lock (conditionMutex);
     while (transmitting)
     {
         // Handle spurious wakeups.
