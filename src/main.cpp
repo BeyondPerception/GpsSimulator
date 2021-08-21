@@ -21,11 +21,10 @@ int main (int argc, char* argv[])
     server.start ();
 
     // Setup gui
-//    QCoreApplication::setApplicationName ("GPSSimulator");
-//    QApplication::setFont (QFont ("Ubuntu Mono"));
-//    QApplication a (argc, argv);
-//    MainWindow window (hackRfController);
-//    window.show ();
-//    return QApplication::exec ();
-    system ("read");
+    QCoreApplication::setApplicationName ("GPSSimulator");
+    QApplication::setFont (QFont ("Ubuntu Mono"));
+    QApplication a (argc, argv);
+    MainWindow window (hackRfController);
+    window.show ();
+    return QApplication::exec ();
 }
