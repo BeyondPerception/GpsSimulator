@@ -101,8 +101,16 @@ void HackRfController::startTransfer ()
         LOG_F (ERROR, "Failed to reset hackrf board. Transmit may not function normally.");
     }
     // Let the board come back up.
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for (2s);
+    for (int i = 0; i < 30; i++)
+    {
+        if (system ("hackrf_info > /dev/null") == 0)
+        {
+            break;
+        }
+
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for (1s);
+    }
 
     LOG_F (INFO, "Starting hackrf_transfer.");
 
