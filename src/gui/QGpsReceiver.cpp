@@ -15,7 +15,7 @@ QGpsReceiver::QGpsReceiver (QWidget* parent) : QStatusButton (parent), threadRun
     setPalette (pal);
 
     mainText = new QLabel ("No Fix");
-    mainText->setFont (QFont ("Ubuntu Mono", 16, QFont::Bold));
+    mainText->setFont (QFont ("Ubuntu Mono", 14, QFont::Bold));
     mainText->setAlignment (Qt::AlignCenter);
     mainText->setWordWrap (true);
     vBoxLayout->addWidget (mainText);
@@ -92,13 +92,12 @@ void QGpsReceiver::gpsquery_task ()
 
     gps_stream (&gpsData, WATCH_ENABLE | WATCH_JSON, nullptr);
 
-    double latOld = 0.0;
-    double longOld = 0.0;
+    struct gps_data_t oldGpsData{};
     uint64_t loops = 0;
 
     while (threadRunning)
     {
-        if (loops > 20)
+        if (loops > 40)
         {
             // Stale data, emit no fix.
             emit fixAcquired (QString::fromStdString ("Stale data, no fix"), OFF);
@@ -107,7 +106,7 @@ void QGpsReceiver::gpsquery_task ()
         }
         if (gps_waiting (&gpsData, 500000))
         {
-            int gpsReadRet = -1;
+            int gpsReadRet;
 #if GPSD_API_MAJOR_VERSION < 7
             gpsReadRet = gps_read (&gpsData);
 #else
@@ -117,15 +116,14 @@ void QGpsReceiver::gpsquery_task ()
             {
                 if (gpsData.fix.mode >= MODE_2D && gpsData.dop.hdop < 20 && gpsData.satellites_used > 0)
                 {
-                    if (latOld == gpsData.fix.latitude && longOld == gpsData.fix.longitude)
+                    if (memcmp (&oldGpsData, &gpsData, sizeof (gps_data_t)) == 0)
                     {
                         loops++;
                     } else
                     {
                         loops = 0;
                     }
-                    latOld = gpsData.fix.latitude;
-                    longOld = gpsData.fix.longitude;
+                    oldGpsData = gpsData;
                     if (transmitStartTime == transmitEndTime)
                     {
                         transmitEndTime = std::chrono::high_resolution_clock::now ();
