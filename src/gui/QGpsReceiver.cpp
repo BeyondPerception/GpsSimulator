@@ -101,8 +101,7 @@ void QGpsReceiver::gpsquery_task ()
         if (loops > 10)
         {
             // Stale data, emit no fix.
-            LOG_F (INFO, "Stale data, emitting no fix.");
-            emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
+            emit fixAcquired (QString::fromStdString ("Stale data, no fix"), OFF);
             continue;
         }
         if (gps_waiting (&gpsData, 500000))
