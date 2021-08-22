@@ -97,10 +97,10 @@ void QGpsReceiver::gpsquery_task ()
 
     while (threadRunning)
     {
-        if (loops > 40)
+        if (loops > 20)
         {
             // Stale data, emit no fix.
-            emit fixAcquired (QString::fromStdString ("Stale data, no fix"), OFF);
+            emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
             loops = 0;
             continue;
         }
