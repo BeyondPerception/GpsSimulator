@@ -97,9 +97,12 @@ void QGpsReceiver::gpsquery_task ()
 
     while (threadRunning)
     {
-        /*
-         * Gps query code adapted from cgps source code.
-         */
+        if (loops > 10)
+        {
+            // Stale data, emit no fix.
+            emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
+            continue;
+        }
         if (gps_waiting (&gpsData, 500000))
         {
             int gpsReadRet = -1;
@@ -110,21 +113,17 @@ void QGpsReceiver::gpsquery_task ()
 #endif
             if (gpsReadRet != -1)
             {
-                if (gpsData.fix.mode >= MODE_2D && gpsData.dop.hdop < 20)
+                if (gpsData.fix.mode >= MODE_2D && gpsData.dop.hdop < 20 && gpsData.satellites_used > 0)
                 {
                     if (latOld == gpsData.fix.latitude && longOld == gpsData.fix.longitude)
                     {
                         loops++;
-                        if (loops > 10000)
-                        {
-                            // Stale data, emit no fix.
-                            emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
-                            continue;
-                        }
                     } else
                     {
                         loops = 0;
                     }
+                    latOld = gpsData.fix.latitude;
+                    longOld = gpsData.fix.longitude;
                     if (transmitStartTime == transmitEndTime)
                     {
                         transmitEndTime = std::chrono::high_resolution_clock::now ();
@@ -157,6 +156,9 @@ void QGpsReceiver::gpsquery_task ()
                     emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
                 }
             }
+        } else
+        {
+            loops++;
         }
     }
 
