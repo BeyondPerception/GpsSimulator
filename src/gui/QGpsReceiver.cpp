@@ -57,6 +57,22 @@ void QGpsReceiver::transmitStarted ()
 
 void QGpsReceiver::setMainText (const QString& text, Status status)
 {
+    QFont font ("Ubuntu Mono", 18, QFont::Bold);
+    QFontMetrics fm (font);
+    int width = fm.horizontalAdvance (text);
+    int size;
+
+    mainText->setFont (font);
+    // Dynamically adjust font size so coords fit in button.
+    while (width >= this->width ())
+    {
+        size = mainText->font ().pointSize () - 1;
+        QFont newFont ("Ubuntu Mono", size, QFont::Bold);
+        QFontMetrics nfm (newFont);
+        mainText->setFont (newFont);
+        width = nfm.horizontalAdvance (text);
+    }
+
     mainText->setText (text);
     setStatus (status);
 }
@@ -91,6 +107,10 @@ void QGpsReceiver::gpsquery_task ()
 
     gps_stream (&gpsData, WATCH_ENABLE | WATCH_JSON, nullptr);
 
+    double latOld = 0.0;
+    double longOld = 0.0;
+    uint64_t loops = 0;
+
     while (threadRunning)
     {
         /*
@@ -108,6 +128,19 @@ void QGpsReceiver::gpsquery_task ()
             {
                 if (gpsData.fix.mode >= MODE_2D && gpsData.dop.hdop < 20)
                 {
+                    if (latOld == gpsData.fix.latitude && longOld == gpsData.fix.longitude)
+                    {
+                        loops++;
+                        if (loops > 10000)
+                        {
+                            // Stale data, emit no fix.
+                            emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
+                            continue;
+                        }
+                    } else
+                    {
+                        loops = 0;
+                    }
                     if (transmitStartTime == transmitEndTime)
                     {
                         transmitEndTime = std::chrono::high_resolution_clock::now ();
