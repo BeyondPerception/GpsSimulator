@@ -14,7 +14,7 @@ QGpsReceiver::QGpsReceiver (QWidget* parent) : QStatusButton (parent), threadRun
     setPalette (pal);
 
     mainText = new QLabel ("No Fix");
-    mainText->setFont (QFont ("Ubuntu Mono", 18, QFont::Bold));
+    mainText->setFont (QFont ("Ubuntu Mono", 16, QFont::Bold));
     mainText->setAlignment (Qt::AlignCenter);
     mainText->setWordWrap (true);
     vBoxLayout->addWidget (mainText);
@@ -57,22 +57,6 @@ void QGpsReceiver::transmitStarted ()
 
 void QGpsReceiver::setMainText (const QString& text, Status status)
 {
-    QFont font ("Ubuntu Mono", 18, QFont::Bold);
-    QFontMetrics fm (font);
-    int width = fm.horizontalAdvance (text);
-    int size;
-
-    mainText->setFont (font);
-    // Dynamically adjust font size so coords fit in button.
-    while (width >= this->width ())
-    {
-        size = mainText->font ().pointSize () - 1;
-        QFont newFont ("Ubuntu Mono", size, QFont::Bold);
-        QFontMetrics nfm (newFont);
-        mainText->setFont (newFont);
-        width = nfm.horizontalAdvance (text);
-    }
-
     mainText->setText (text);
     setStatus (status);
 }
