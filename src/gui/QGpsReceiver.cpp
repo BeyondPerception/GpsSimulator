@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
+#include "loguru.hpp"
 
 QGpsReceiver::QGpsReceiver (QWidget* parent) : QStatusButton (parent), threadRunning (false)
 {
@@ -100,6 +101,7 @@ void QGpsReceiver::gpsquery_task ()
         if (loops > 10)
         {
             // Stale data, emit no fix.
+            LOG_F (INFO, "Stale data, emitting no fix.");
             emit fixAcquired (QString::fromStdString ("No Fix"), OFF);
             continue;
         }
