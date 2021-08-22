@@ -40,7 +40,7 @@
                     <number>60</number>
                   </property>
                   <property name="sliderPosition">
-                    <number>300</number>
+                    <number>400</number>
                   </property>
                   <property name="orientation">
                     <enum>Qt::Vertical</enum>

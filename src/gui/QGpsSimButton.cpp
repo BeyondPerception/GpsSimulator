@@ -6,7 +6,7 @@
 #include <loguru.hpp>
 #include <iostream>
 
-QGpsSimButton::QGpsSimButton (QWidget* parent) : QWidget (parent), duration (300), currentLocationIndex (0)
+QGpsSimButton::QGpsSimButton (QWidget* parent) : QWidget (parent), duration (400), currentLocationIndex (0)
 {
     auto* vboxLayOut = new QVBoxLayout (this);
 

@@ -22,8 +22,6 @@ public:
 
     uint16_t getHeight () const;
 
-    void showLoading (bool enable);
-
 public slots:
 
     void setDuration (uint16_t simFileDuration);
